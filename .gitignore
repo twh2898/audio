@@ -1,0 +1,63 @@
+# Created by https://www.gitignore.io/api/visualstudiocode
+# Edit at https://www.gitignore.io/?templates=visualstudiocode
+
+### VisualStudioCode ###
+.vscode/**/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+**/.history
+
+# End of https://www.gitignore.io/api/visualstudiocode
+
+# Some rules taken from https://github.com/github/gitignore/blob/master/CMake.gitignore
+
+# IDE's
+tags
+
+# Compiled Object files
+**/.DS_Store
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+**/cmake-build-debug
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/install_manifest.txt
+**/CMakeFiles/
+**/CTestTestfile.cmake
+**/Makefile
+**/*.cbp
+**/CMakeScripts
+**/compile_commands.json
+
+## Local 
+
+.idea/
+build/
