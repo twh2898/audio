@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <memory>
 
 namespace sound {
     const float a = std::pow(2.0, 1.0 / 12.0);
@@ -57,4 +58,96 @@ namespace sound {
             return saw(i, n, samp) > duty;
         }
     }
+
+    constexpr float lerp(float a, float b, float t) noexcept {
+        if ((a <= 0 && b >= 0) || (a >= 0 && b <= 0))
+            return t * b + (1 - t) * a;
+
+        if (t == 1)
+            return b;
+
+        const float x = a + t * (b - a);
+        return (t > 1) == (b > a) ? (b < x ? x : b) : (b > x ? x : b);
+    }
+
+    using std::shared_ptr;
+    using std::move;
+    using std::swap;
+
+    struct Context {
+        int sampleRate;
+
+        Context(int sampleRate) : sampleRate(sampleRate) {}
+
+        float hz(long sample) const {
+            return (float)sample / sampleRate;
+        }
+    };
+
+    // TODO: Incomplete, never finished timing, decay or release
+    class Envelope {
+        float attack;
+        float decay;
+        float sustain;
+        float release;
+
+        mutable bool m_active;
+        mutable float m_gain;
+
+    public:
+        Envelope(float attack, float decay, float sustain, float release)
+            : attack(attack),
+              decay(decay),
+              sustain(sustain),
+              release(release),
+              m_active(false),
+              m_gain(0.0) {}
+
+        Envelope(const Envelope & other)
+            : attack(other.attack),
+              decay(other.decay),
+              sustain(other.sustain),
+              release(other.release),
+              m_active(false),
+              m_gain(0.0) {}
+
+        Envelope(Envelope && other)
+            : attack(other.attack),
+              decay(other.decay),
+              sustain(other.sustain),
+              release(other.release),
+              m_active(false),
+              m_gain(0.0) {}
+
+        void start() const {
+            m_active = true;
+        }
+
+        void end() const {
+            m_active = false;
+        }
+
+        float gain(float t) const {
+            if (t <= attack) {
+                m_gain = lerp(0, 1, t / attack);
+            }
+            else if (t <= attack + decay) {
+                m_gain = lerp(1, sustain, (t - attack) / decay);
+            }
+
+            return m_gain;
+        }
+    };
+
+    class Oscillator {
+        const Context & ctx;
+
+        float detune;
+        float tune;
+
+    public:
+        Oscillator(const Context & ctx) : ctx(ctx) {}
+
+        virtual ~Oscillator() {}
+    };
 }
