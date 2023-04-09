@@ -1,6 +1,6 @@
 #include <cmath>
-#include <fstream>
 #include <iostream>
+#include <fstream>
 #include <memory>
 using namespace std;
 
@@ -90,18 +90,21 @@ ALuint create_source() {
 void load_audio(ALuint buffer) {
     cout << "Loading audio" << endl;
 
-    ofstream of("../extract.csv");
-
-    of << "i,sin,sint,t" << endl;
+    ofstream of("../single.csv");
 
     size_t freq = 48000;
     size_t size = freq * 1;
     float amp = 0.8;
     char data[size];
     for (int i = 0; i < size; i++) {
+        float t = (float)i / freq;
+        float s = wave::sqrt(0, t) + wave::trit(3, t) + wave::sint(7, t);
         // float s = wave::sqr(i, 0, freq) + wave::tri(i, 3, freq)
         //           + wave::sin(i, 7, freq);
         // data[i] = 128 + (128 * amp * s / 3.0);
+        // data[i] = 128 + (128 * amp * dcomp(s, 16));
+        data[i] = 128 + (128 * amp * scomp(s));
+        of << (s / 3.0) << ',' << dcomp(s, 3) << ',' << scomp(s) << endl;
         // if (i < freq / 2) {
         //     data[i] = 128 + (64 * wave::sqr(i, 0, freq, 0.5));
         // }
@@ -111,12 +114,6 @@ void load_audio(ALuint buffer) {
         //     data[i] = 128 + (64 * s / 3.0);
         //     // data[i] = 128 + sin(i / M_PI) * (64 - (64 * i / freq));
         // }
-
-        data[i] = 128 + (64 * wave::sint(0, (float)i / freq));
-        of << i << ',';
-        of << wave::sin(i, 0, freq) << ',';
-        of << wave::sint(0, (float)i / freq) << ',';
-        of << ((float)i / freq) << endl;
     }
 
     of.close();
