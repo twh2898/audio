@@ -9,6 +9,7 @@ using namespace std;
 
 #include <cstring>
 
+#include "plugins/delay.hpp"
 #include "plugins/gain.hpp"
 #include "plugins/oscillator.hpp"
 #include "sound.hpp"
@@ -137,12 +138,17 @@ void load_audio(ALuint buffer) {
     osc3.note = 5;
     osc3.gain = 0.3;
 
+    // TODO: Use single buffer to sum signal from sources as a bus buffer
+    // then create a buffer for each effect. The effect input is the bus buffer
+    // the output goes to the buffer for that effect and is added to the bus
+    // buffer
     Gain gain(ctx, 0.3);
     b1.addEffect(gain);
 
+    Delay delay(ctx, freq * 0.1, 0.1, 0.5);
+    b1.addEffect(delay);
+
     vector<float> buff(size, 0);
-    // TODO: This does not do what you think it does. What buffers should you
-    // be operating on?
     b1.process(buff);
     b1.processReplace(buff);
 

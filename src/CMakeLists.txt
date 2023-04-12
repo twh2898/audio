@@ -1,6 +1,7 @@
 set(TARGET app)
 
 set(HEADER_LIST
+    plugins/delay.hpp
     plugins/gain.hpp
     plugins/oscillator.hpp
     plugins/plugin.hpp
