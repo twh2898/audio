@@ -125,7 +125,19 @@ void load_audio(ALuint buffer) {
     osc.note = 0;
     osc.gain = 0.8;
 
-    Gain gain(ctx, 0.8);
+    Oscillator osc2(ctx, Oscillator::Saw);
+    b1.addSource(osc2);
+    osc2.active = true;
+    osc2.note = 3;
+    osc2.gain = 0.5;
+
+    Oscillator osc3(ctx, Oscillator::Square);
+    b1.addSource(osc3);
+    osc3.active = true;
+    osc3.note = 5;
+    osc3.gain = 0.3;
+
+    Gain gain(ctx, 0.3);
     b1.addEffect(gain);
 
     vector<float> b_in(size, 0);
@@ -137,6 +149,10 @@ void load_audio(ALuint buffer) {
     // TODO: This does not do what you think it does. What buffers should you
     // be operating on?
     b1.process(ch_in.data(), ch_out.data(), size, 1);
+    for (int i = 0; i < size; i++) {
+        b_in[i] = b_out[i];
+    }
+    b1.processReplace(ch_in.data(), ch_out.data(), size, 1);
 
     util::dumpWave("../../testwave.csv", b_out.data(), b_out.size());
 
