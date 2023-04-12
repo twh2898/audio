@@ -26,11 +26,11 @@ namespace sound::plugins {
             return 2.0 * std::abs(sawWave(sample)) - 1.0;
         }
 
-        inline float sqrWave(int sample, float duty = 0.5) {
+        inline float sqrWave(int sample) {
             return sawWave(sample) > duty ? 1.0 : -1.0;
         }
 
-        float createWave(int sample, float duty = 0.5) {
+        float createWave(int sample) {
             switch (shape) {
                 case Sin:
                     return sinWave(sample);
@@ -39,7 +39,7 @@ namespace sound::plugins {
                 case Triangle:
                     return triWave(sample);
                 case Square:
-                    return sqrWave(sample, duty);
+                    return sqrWave(sample);
             }
 
             return 0.0f;
@@ -48,6 +48,7 @@ namespace sound::plugins {
     public:
         float detune;
         float gain;
+        float duty;
         int note;
         bool active;
 
@@ -63,6 +64,7 @@ namespace sound::plugins {
               shape(shape),
               detune(0.0),
               gain(1.0),
+              duty(0.5),
               note(0),
               active(false) {}
 
