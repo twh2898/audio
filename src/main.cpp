@@ -140,25 +140,17 @@ void load_audio(ALuint buffer) {
     Gain gain(ctx, 0.3);
     b1.addEffect(gain);
 
-    vector<float> b_in(size, 0);
-    vector<float> b_out(size, 0);
-
-    vector<const float *> ch_in {b_in.data()};
-    vector<float *> ch_out {b_out.data()};
-
+    vector<float> buff(size, 0);
     // TODO: This does not do what you think it does. What buffers should you
     // be operating on?
-    b1.process(ch_in.data(), ch_out.data(), size, 1);
-    for (int i = 0; i < size; i++) {
-        b_in[i] = b_out[i];
-    }
-    b1.processReplace(ch_in.data(), ch_out.data(), size, 1);
+    b1.process(buff);
+    b1.processReplace(buff);
 
-    util::dumpWave("../../testwave.csv", b_out.data(), b_out.size());
+    util::dumpWave("../../testwave.csv", buff.data(), buff.size());
 
     vector<uint8_t> quantize(size, 0);
     for (int i = 0; i < size; i++) {
-        quantize[i] = (b_out[i] / 2.0 + 0.5) * 128.0;
+        quantize[i] = (buff[i] / 2.0 + 0.5) * 128.0;
     }
 
     util::dumpWave("../../quantize.csv", quantize.data(), quantize.size());

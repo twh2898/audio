@@ -70,38 +70,19 @@ namespace sound::plugins {
 
         virtual ~Oscillator() {}
 
-        inline void pass(const float ** in, float ** out, size_t len, size_t channels) {
-            for (int i = 0; i < len; i++) {
-                for (int c = 0; c < channels; c++) {
-                    out[c][i] = in[c][i];
-                }
+        void process(vector<float> & buff) override {
+            if (!active)
+                return;
+            for (int i = 0; i < buff.size(); i++) {
+                buff[i] += createWave(i) * gain;
             }
         }
 
-        void process(const float ** in, float ** out, size_t len, size_t channels) override {
-            if (!active) {
-                pass(in, out, len, channels);
+        void processReplace(vector<float> & buff) override {
+            if (!active)
                 return;
-            }
-            for (int i = 0; i < len; i++) {
-                for (int c = 0; c < channels; c++) {
-                    out[c][i] = in[c][i] + createWave(i) * gain;
-                }
-            }
-        }
-
-        void processReplace(const float ** in,
-                            float ** out,
-                            size_t len,
-                            size_t channels) override {
-            if (!active) {
-                pass(in, out, len, channels);
-                return;
-            }
-            for (int i = 0; i < len; i++) {
-                for (int c = 0; c < channels; c++) {
-                    out[c][i] = createWave(i) * gain;
-                }
+            for (int i = 0; i < buff.size(); i++) {
+                buff[i] = createWave(i) * gain;
             }
         }
     };

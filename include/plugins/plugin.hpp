@@ -1,10 +1,13 @@
 #pragma once
 
 #include <cstddef>
+#include <vector>
 
 #include "context.hpp"
 
 namespace sound {
+    using std::vector;
+
     class Plugin {
     public:
         Context & ctx;
@@ -19,14 +22,8 @@ namespace sound {
 
         virtual ~Plugin() {}
 
-        virtual void process(const float ** in,
-                             float ** out,
-                             size_t len,
-                             size_t channels) = 0;
+        virtual void process(vector<float> & buff) = 0;
 
-        virtual void processReplace(const float ** in,
-                                    float ** out,
-                                    size_t len,
-                                    size_t channels) = 0;
+        virtual void processReplace(vector<float> & buff) = 0;
     };
 }

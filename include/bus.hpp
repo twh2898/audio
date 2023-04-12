@@ -38,18 +38,15 @@ namespace sound {
             effects.push_back(&effect);
         }
 
-        void process(const float ** in, float ** out, size_t len, size_t channels) {
+        void process(vector<float> & buff) {
             for (auto * src : sources) {
-                src->process(in, out, len, channels);
+                src->process(buff);
             }
         }
 
-        void processReplace(const float ** in,
-                            float ** out,
-                            size_t len,
-                            size_t channels) {
+        void processReplace(vector<float> & buff) {
             for (auto * eff : effects) {
-                eff->processReplace(in, out, len, channels);
+                eff->processReplace(buff);
             }
         }
     };

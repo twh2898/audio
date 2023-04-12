@@ -9,22 +9,15 @@ namespace sound::plugins {
 
         Gain(Context & ctx, float gain = 1.0) : Plugin(ctx), gain(gain) {}
 
-        void process(const float ** in, float ** out, size_t len, size_t channels) override {
-            for (int i = 0; i < len; i++) {
-                for (int c = 0; c < channels; c++) {
-                    out[c][i] = in[c][i] * gain;
-                }
+        void process(vector<float> & buff) override {
+            for (int i = 0; i < buff.size(); i++) {
+                buff[i] = buff[i] * gain;
             }
         }
 
-        void processReplace(const float ** in,
-                            float ** out,
-                            size_t len,
-                            size_t channels) override {
-            for (int i = 0; i < len; i++) {
-                for (int c = 0; c < channels; c++) {
-                    out[c][i] = in[c][i] * gain;
-                }
+        void processReplace(vector<float> & buff) override {
+            for (int i = 0; i < buff.size(); i++) {
+                buff[i] = buff[i] * gain;
             }
         }
     };
