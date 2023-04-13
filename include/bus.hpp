@@ -52,8 +52,8 @@ namespace sound {
         }
 
         void process() {
-            buffer.resize(ctx.sampleRate);
-            tmp.resize(ctx.sampleRate);
+            buffer.resize(ctx.sampleRate, 0.0);
+            tmp.resize(ctx.sampleRate, 0.0);
             clearBuffers();
 
             for (auto * src : sources) {

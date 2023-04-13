@@ -148,6 +148,8 @@ void load_audio(ALuint buffer) {
     // Delay delay(ctx, freq * 0.1, 0.1, 0.5);
     // b1.addEffect(delay);
 
+    b1.process();
+
     auto & buff = b1.getBuffer();
 
     util::dumpWave("../../testwave.csv", buff.data(), buff.size());
