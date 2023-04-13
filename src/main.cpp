@@ -145,8 +145,8 @@ void load_audio(ALuint buffer) {
     Gain gain(ctx, 0.3);
     b1.addEffect(gain);
 
-    Delay delay(ctx, freq * 0.1, 0.1, 0.5);
-    b1.addEffect(delay);
+    // Delay delay(ctx, freq * 0.1, 0.1, 0.5);
+    // b1.addEffect(delay);
 
     vector<float> buff(size, 0);
     b1.process(buff);
