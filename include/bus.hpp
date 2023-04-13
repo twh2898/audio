@@ -37,7 +37,8 @@ namespace sound {
         }
 
     public:
-        Bus(Context & ctx) : ctx(ctx) {}
+        Bus(Context & ctx)
+            : ctx(ctx), buffer(ctx.sampleRate, 0), tmp(ctx.sampleRate, 0) {}
 
         const vector<float> & getBuffer() {
             return buffer;
@@ -63,8 +64,8 @@ namespace sound {
                 sumBuffer();
             }
 
-            for (auto * src : effects) {
-                src->process(buffer.data(), tmp.data(), buffer.size());
+            for (auto * eff : effects) {
+                eff->process(buffer.data(), tmp.data(), buffer.size());
                 copyBuffer();
             }
         }
