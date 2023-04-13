@@ -95,28 +95,6 @@ void load_audio(ALuint buffer) {
     cout << "Loading audio" << endl;
 
     size_t freq = 44100;
-    size_t size = freq * 1;
-    // float amp = 0.8;
-    // char data[size];
-    // for (int i = 0; i < size; i++) {
-    //     float t = (float)i / freq;
-    //     float s = wave::sqrt(0, t) + wave::trit(3, t) + wave::sint(7, t);
-    //     // float s = wave::sqr(i, 0, freq) + wave::tri(i, 3, freq)
-    //     //           + wave::sin(i, 7, freq);
-    //     data[i] = 128 + (128 * amp * s / 3.0);
-    //     // data[i] = 128 + (128 * amp * dcomp(s, 16));
-    //     // data[i] = 128 + (128 * amp * scomp(s));
-    //     // if (i < freq / 2) {
-    //     //     data[i] = 128 + (64 * wave::sqr(i, 0, freq, 0.5));
-    //     // }
-    //     // else {
-    //     //     float s = wave::sin(i, 0, freq) + wave::sin(i, 3, freq)
-    //     //               + wave::sin(i, 7, freq);
-    //     //     data[i] = 128 + (64 * s / 3.0);
-    //     //     // data[i] = 128 + sin(i / M_PI) * (64 - (64 * i / freq));
-    //     // }
-    // }
-
     Context ctx(freq);
     Bus b1(ctx);
 
@@ -138,15 +116,11 @@ void load_audio(ALuint buffer) {
     osc3.note = 5;
     osc3.gain = 0.3;
 
-    // TODO: Use single buffer to sum signal from sources as a bus buffer
-    // then create a buffer for each effect. The effect input is the bus buffer
-    // the output goes to the buffer for that effect and is added to the bus
-    // buffer
     Gain gain(ctx, 0.3);
     b1.addEffect(gain);
 
-    // Delay delay(ctx, freq * 0.1, 0.1, 0.5);
-    // b1.addEffect(delay);
+    Delay delay(ctx, freq * 0.1, 0.1, 0.3);
+    b1.addEffect(delay);
 
     b1.process();
 
@@ -154,8 +128,8 @@ void load_audio(ALuint buffer) {
 
     util::dumpWave("../../testwave.csv", buff.data(), buff.size());
 
-    vector<uint8_t> quantize(size, 0);
-    for (int i = 0; i < size; i++) {
+    vector<uint8_t> quantize(buff.size(), 0);
+    for (int i = 0; i < buff.size(); i++) {
         quantize[i] = (buff[i] / 2.0 + 0.5) * 128.0;
     }
 
