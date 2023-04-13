@@ -6,7 +6,7 @@ namespace sound::plugins {
     class Delay : public Plugin {
         float delaySignal(const float * in, float signal, int sample) {
             if (sample >= delay) {
-                return signal * (1.0 / mix) + (in[sample - delay] * feedback) * mix;
+                return signal + (in[sample - delay] * feedback) * mix;
             }
             else {
                 return signal;
