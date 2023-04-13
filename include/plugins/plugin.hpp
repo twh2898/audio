@@ -22,8 +22,6 @@ namespace sound {
 
         virtual ~Plugin() {}
 
-        virtual void process(vector<float> & buff) = 0;
-
-        virtual void processReplace(vector<float> & buff) = 0;
+        virtual void process(const float * in, float * out, size_t len) = 0;
     };
 }

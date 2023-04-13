@@ -4,12 +4,9 @@
 
 namespace sound::plugins {
     class Delay : public Plugin {
-        vector<float> delayBuff;
-
-        float delaySignal(float signal, int sample) {
+        float delaySignal(const float * in, float signal, int sample) {
             if (sample >= delay) {
-                return signal * (1.0 / mix)
-                       + (delayBuff[sample - delay] * feedback) * mix;
+                return signal * (1.0 / mix) + (in[sample - delay] * feedback) * mix;
             }
             else {
                 return signal;
@@ -22,25 +19,11 @@ namespace sound::plugins {
         float mix;
 
         Delay(Context & ctx, int delay, float feedback, float mix)
-            : Plugin(ctx),
-              delay(delay),
-              feedback(feedback),
-              mix(mix),
-              delayBuff(delay, 0) {}
+            : Plugin(ctx), delay(delay), feedback(feedback), mix(mix) {}
 
-        void process(vector<float> & buff) override {
-            delayBuff.resize(delay);
-            for (int i = 0; i < buff.size(); i++) {
-                delayBuff[i] = buff[i];
-                buff[i] = delaySignal(buff[i], i);
-            }
-        }
-
-        void processReplace(vector<float> & buff) override {
-            delayBuff.resize(delay);
-            for (int i = 0; i < buff.size(); i++) {
-                delayBuff[i] = buff[i];
-                buff[i] = delaySignal(buff[i], i);
+        void process(const float * in, float * out, size_t len) override {
+            for (int i = 0; i < len; i++) {
+                out[i] = delaySignal(in, in[i], i);
             }
         }
     };

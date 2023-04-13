@@ -25,7 +25,7 @@ namespace sound::util {
         return (t > 1) == (b > a) ? (b < x ? x : b) : (b > x ? x : b);
     }
 
-    void dumpWave(const string & filepath, float * wave, size_t len) {
+    void dumpWave(const string & filepath, const float * wave, size_t len) {
         ofstream of(filepath);
         for (int i = 0; i < len; i++) {
             of << wave[i] << std::endl;
@@ -33,7 +33,7 @@ namespace sound::util {
         of.close();
     }
 
-    void dumpWave(const string & filepath, uint8_t * wave, size_t len) {
+    void dumpWave(const string & filepath, const uint8_t * wave, size_t len) {
         ofstream of(filepath);
         for (int i = 0; i < len; i++) {
             of << (int)wave[i] << std::endl;

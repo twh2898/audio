@@ -70,21 +70,12 @@ namespace sound::plugins {
 
         virtual ~Oscillator() {}
 
-        void process(vector<float> & buff) override {
+        void process(const float * in, float * out, size_t len) override {
             if (!active)
                 return;
-            for (int i = 0; i < buff.size(); i++) {
-                buff[i] += createWave(i) * gain;
-            }
-        }
-
-        void processReplace(vector<float> & buff) override {
-            if (!active)
-                return;
-            for (int i = 0; i < buff.size(); i++) {
-                buff[i] = createWave(i) * gain;
+            for (int i = 0; i < len; i++) {
+                out[i] = createWave(i) * gain;
             }
         }
     };
-
 }

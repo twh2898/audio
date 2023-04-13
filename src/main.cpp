@@ -118,7 +118,7 @@ void load_audio(ALuint buffer) {
     // }
 
     Context ctx(freq);
-    Bus b1;
+    Bus b1(ctx);
 
     Oscillator osc(ctx, Oscillator::Sin);
     b1.addSource(osc);
@@ -148,9 +148,7 @@ void load_audio(ALuint buffer) {
     // Delay delay(ctx, freq * 0.1, 0.1, 0.5);
     // b1.addEffect(delay);
 
-    vector<float> buff(size, 0);
-    b1.process(buff);
-    b1.processReplace(buff);
+    auto & buff = b1.getBuffer();
 
     util::dumpWave("../../testwave.csv", buff.data(), buff.size());
 

@@ -8,27 +8,40 @@ namespace sound {
     using std::vector;
 
     class Bus {
-        size_t channels;
+        Context & ctx;
 
         vector<Plugin *> sources;
         vector<Plugin *> effects;
 
-    public:
-        Bus(size_t channels = 1) : channels(channels) {}
+        vector<float> buffer;
+        vector<float> tmp;
 
-        Bus(Bus && other)
-            : sources(move(other.sources)), effects(move(other.effects)) {}
-
-        Bus & operator=(Bus && other) {
-            sources = move(other.sources);
-            effects = move(other.effects);
-            return *this;
+        void clearBuffers() {
+            for (int i = 0; i < buffer.size(); i++) {
+                buffer[i] = tmp[i] = 0;
+            }
         }
 
-        Bus(const Bus &) = delete;
-        Bus & operator=(const Bus &) = delete;
+        void sumBuffer() {
+            for (int i = 0; i < buffer.size(); i++) {
+                buffer[i] += tmp[i];
+                tmp[i] = 0;
+            }
+        }
 
-        ~Bus() {}
+        void copyBuffer() {
+            for (int i = 0; i < buffer.size(); i++) {
+                buffer[i] = tmp[i];
+                tmp[i] = 0;
+            }
+        }
+
+    public:
+        Bus(Context & ctx) : ctx(ctx) {}
+
+        const vector<float> & getBuffer() {
+            return buffer;
+        }
 
         void addSource(Plugin & source) {
             sources.push_back(&source);
@@ -38,15 +51,21 @@ namespace sound {
             effects.push_back(&effect);
         }
 
-        void process(vector<float> & buff) {
-            for (auto * src : sources) {
-                src->process(buff);
-            }
-        }
+        void process() {
+            buffer.resize(ctx.sampleRate);
+            tmp.resize(ctx.sampleRate);
+            clearBuffers();
 
-        void processReplace(vector<float> & buff) {
-            for (auto * eff : effects) {
-                eff->processReplace(buff);
+            for (auto * src : sources) {
+                // I know this is going to backfire, but I'd rather deal with
+                // tracing this than tracing a source that uses it's input.
+                src->process(nullptr, tmp.data(), buffer.size());
+                sumBuffer();
+            }
+
+            for (auto * src : effects) {
+                src->process(buffer.data(), tmp.data(), buffer.size());
+                copyBuffer();
             }
         }
     };
