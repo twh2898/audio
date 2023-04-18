@@ -7,12 +7,16 @@ set(HEADER_LIST
     plugins/plugin.hpp
     bus.hpp
     context.hpp
+    fft.hpp
     sound.hpp
     util.hpp
 )
 list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/")
 
-set(SOURCE_LIST main.cpp)
+set(SOURCE_LIST 
+    fft.cpp
+    main.cpp
+)
 list(TRANSFORM SOURCE_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/src/")
 
 add_executable(${TARGET} ${SOURCE_LIST} ${HEADER_LIST})

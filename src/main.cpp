@@ -9,6 +9,7 @@ using namespace std;
 
 #include <cstring>
 
+#include "fft.hpp"
 #include "plugins/delay.hpp"
 #include "plugins/gain.hpp"
 #include "plugins/oscillator.hpp"
@@ -133,13 +134,48 @@ void load_audio(ALuint buffer) {
         quantize[i] = (buff[i] / 2.0 + 0.5) * 128.0;
     }
 
+    std::vector<Complex> b2;
+    for (auto v : buff) {
+        b2.emplace_back(v);
+    }
+    CArray data(b2.data(), b2.size());
+    fft(data);
+
+    std::cout << "fft" << std::endl;
+    for (int i = 0; i < 8; ++i) {
+        std::cout << data[i] << std::endl;
+    }
+
     util::dumpWave("../../quantize.csv", quantize.data(), quantize.size());
 
     alBufferData(buffer, AL_FORMAT_MONO8, quantize.data(), quantize.size(), freq);
     error();
 }
 
+static void fftDemo() {
+    const Complex test[] = {1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0};
+    CArray data(test, 8);
+
+    // forward fft
+    fft(data);
+
+    std::cout << "fft" << std::endl;
+    for (int i = 0; i < 8; ++i) {
+        std::cout << data[i] << std::endl;
+    }
+
+    // inverse fft
+    ifft(data);
+
+    std::cout << std::endl << "ifft" << std::endl;
+    for (int i = 0; i < 8; ++i) {
+        std::cout << data[i] << std::endl;
+    }
+}
+
 int main() {
+    fftDemo();
+
     ALCdevice * device;
 
     device = alcOpenDevice(NULL);
